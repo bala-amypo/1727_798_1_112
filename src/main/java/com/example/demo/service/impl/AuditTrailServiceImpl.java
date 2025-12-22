@@ -1,35 +1,38 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.repository.AuditTrailRecordRepository;
+import com.example.demo.service.AuditTrailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class AuditTrailServiceImpl
-        implements AuditTrailService {
-
-    private final AuditTrailRecordRepository repository;
-
-    // REQUIRED CONSTRUCTOR SIGNATURE
-    public AuditTrailServiceImpl(
-            AuditTrailRecordRepository repository) {
-        this.repository = repository;
+@Transactional
+public class AuditTrailServiceImpl implements AuditTrailService {
+    
+    private final AuditTrailRecordRepository auditRepository;
+    
+    @Autowired
+    public AuditTrailServiceImpl(AuditTrailRecordRepository auditRepository) {
+        this.auditRepository = auditRepository;
     }
-
+    
     @Override
     public AuditTrailRecord logEvent(AuditTrailRecord record) {
-        return repository.save(record);
+        // Ensure loggedAt is set
+        if (record.getLoggedAt() == null) {
+            record.setLoggedAt(LocalDateTime.now());
+        }
+        
+        return auditRepository.save(record);
     }
-
+    
     @Override
     public List<AuditTrailRecord> getLogsByCredential(Long credentialId) {
-        return repository.findByCredentialId(credentialId);
-    }
-
-    @Override
-    public List<AuditTrailRecord> getAllLogs() {
-        return repository.findAll();
+        return auditRepository.findByCredentialId(credentialId);
     }
 }
