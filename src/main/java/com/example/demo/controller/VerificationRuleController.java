@@ -2,41 +2,20 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.VerificationRule;
 import com.example.demo.service.VerificationRuleService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/rules")
-@Tag(name = "Verification Rules")
 public class VerificationRuleController {
-
-    private final VerificationRuleService service;
-
-    public VerificationRuleController(VerificationRuleService service) {
-        this.service = service;
-    }
-
+    
+    @Autowired
+    private VerificationRuleService ruleService;
+    
     @PostMapping
-    public VerificationRule create(@RequestBody VerificationRule rule) {
-        return service.createRule(rule);
-    }
-
-    @PutMapping("/{id}")
-    public VerificationRule update(
-            @PathVariable Long id,
-            @RequestBody VerificationRule rule) {
-        return service.updateRule(id, rule);
-    }
-
-    @GetMapping("/active")
-    public List<VerificationRule> getActive() {
-        return service.getActiveRules();
-    }
-
-    @GetMapping
-    public List<VerificationRule> getAll() {
-        return service.getAllRules();
+    public ResponseEntity<VerificationRule> create(@RequestBody VerificationRule rule) {
+        VerificationRule createdRule = ruleService.createRule(rule);
+        return ResponseEntity.ok(createdRule);
     }
 }

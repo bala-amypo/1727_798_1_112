@@ -2,35 +2,28 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.service.AuditTrailService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/audit")
-@Tag(name = "Audit Trail")
+@RequestMapping("/api/audit-trails")
 public class AuditTrailController {
-
-    private final AuditTrailService service;
-
-    public AuditTrailController(AuditTrailService service) {
-        this.service = service;
-    }
-
+    
+    @Autowired
+    private AuditTrailService auditTrailService;
+    
     @PostMapping
-    public AuditTrailRecord log(@RequestBody AuditTrailRecord record) {
-        return service.logEvent(record);
+    public ResponseEntity<AuditTrailRecord> log(@RequestBody AuditTrailRecord record) {
+        AuditTrailRecord loggedRecord = auditTrailService.logEvent(record);
+        return ResponseEntity.ok(loggedRecord);
     }
-
+    
     @GetMapping("/credential/{credentialId}")
-    public List<AuditTrailRecord> getByCredential(
-            @PathVariable Long credentialId) {
-        return service.getLogsByCredential(credentialId);
-    }
-
-    @GetMapping
-    public List<AuditTrailRecord> getAll() {
-        return service.getAllLogs();
+    public ResponseEntity<List<AuditTrailRecord>> getByCredential(@PathVariable Long credentialId) {
+        List<AuditTrailRecord> auditLogs = auditTrailService.getLogsByCredential(credentialId);
+        return ResponseEntity.ok(auditLogs);
     }
 }

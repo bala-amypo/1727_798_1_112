@@ -2,41 +2,34 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.CredentialHolderProfile;
 import com.example.demo.service.CredentialHolderProfileService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/holders")
-@Tag(name = "Credential Holders")
 public class CredentialHolderController {
-
-    private final CredentialHolderProfileService service;
-
-    public CredentialHolderController(CredentialHolderProfileService service) {
-        this.service = service;
-    }
-
+    
+    @Autowired
+    private CredentialHolderProfileService holderService;
+    
     @PostMapping
-    public CredentialHolderProfile createHolder(@RequestBody CredentialHolderProfile profile) {
-        return service.createHolder(profile);
+    public ResponseEntity<CredentialHolderProfile> create(@RequestBody CredentialHolderProfile profile) {
+        CredentialHolderProfile createdHolder = holderService.createHolder(profile);
+        return ResponseEntity.ok(createdHolder);
     }
-
+    
     @GetMapping("/{id}")
-    public CredentialHolderProfile getHolder(@PathVariable Long id) {
-        return service.getHolderById(id);
+    public ResponseEntity<CredentialHolderProfile> getById(@PathVariable Long id) {
+        CredentialHolderProfile holder = holderService.getHolderById(id);
+        return ResponseEntity.ok(holder);
     }
-
-    @GetMapping
-    public List<CredentialHolderProfile> getAll() {
-        return service.getAllHolders();
-    }
-
+    
     @PutMapping("/{id}/status")
-    public CredentialHolderProfile updateStatus(
+    public ResponseEntity<CredentialHolderProfile> updateStatus(
             @PathVariable Long id,
             @RequestParam boolean active) {
-        return service.updateHolderStatus(id, active);
+        CredentialHolderProfile updatedHolder = holderService.updateStatus(id, active);
+        return ResponseEntity.ok(updatedHolder);
     }
 }
