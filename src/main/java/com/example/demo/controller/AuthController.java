@@ -1,65 +1,47 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.*;
 import com.example.demo.entity.User;
-import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserService userService;
-    private final JwtUtil jwtUtil;
+    @Autowired
+    private UserService userService;
 
-    public AuthController(UserService userService, JwtUtil jwtUtil) {
-        this.userService = userService;
-        this.jwtUtil = jwtUtil;
-    }
-
+    // Register a new user
     @PostMapping("/register")
-    public ResponseEntity<JwtResponse> register(
-            @RequestBody RegisterRequest request) {
-
-        User user = new User();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
-
-        User saved = userService.registerUser(user);
-
-        String token = jwtUtil.generateToken(
-                saved.getId(),
-                saved.getEmail(),
-                saved.getRole());
-
-        return ResponseEntity.ok(
-                new JwtResponse(
-                        token,
-                        saved.getId(),
-                        saved.getEmail(),
-                        saved.getRole()));
+    public User registerUser(@RequestBody User user) {
+        return userService.createUser(user);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(
-            @RequestBody LoginRequest request) {
+    // Get all users
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
 
-        User user = userService.findByEmail(request.getEmail());
+    // Get user by ID
+    @GetMapping("/users/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
 
-        String token = jwtUtil.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole());
+    // Update user
+    @PutMapping("/users/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user);
+    }
 
-        return ResponseEntity.ok(
-                new JwtResponse(
-                        token,
-                        user.getId(),
-                        user.getEmail(),
-                        user.getRole()));
+    // Delete user
+    @DeleteMapping("/users/{id}")
+    public String deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return "User deleted successfully!";
     }
 }
