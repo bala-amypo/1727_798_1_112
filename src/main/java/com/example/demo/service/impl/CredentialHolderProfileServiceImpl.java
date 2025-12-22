@@ -1,39 +1,42 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.CredentialHolderProfile;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CredentialHolderProfileRepository;
-import com.example.demo.service.CredentialHolderProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
-@Transactional
-public class CredentialHolderProfileServiceImpl implements CredentialHolderProfileService {
-    
-    private final CredentialHolderProfileRepository holderRepository;
-    
+public class CredentialHolderProfileServiceImpl {
+
     @Autowired
-    public CredentialHolderProfileServiceImpl(CredentialHolderProfileRepository holderRepository) {
-        this.holderRepository = holderRepository;
+    private CredentialHolderProfileRepository profileRepository;
+
+    public List<CredentialHolderProfile> getAllProfiles() {
+        return profileRepository.findAll();
     }
-    
-    @Override
-    public CredentialHolderProfile createHolder(CredentialHolderProfile profile) {
-        return holderRepository.save(profile);
+
+    public CredentialHolderProfile getProfileById(Long id) {
+        return profileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("CredentialHolderProfile not found with id: " + id));
     }
-    
-    @Override
-    public CredentialHolderProfile getHolderById(Long id) {
-        return holderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("CredentialHolderProfile", "id", id));
+
+    public CredentialHolderProfile createProfile(CredentialHolderProfile profile) {
+        return profileRepository.save(profile);
     }
-    
-    @Override
-    public CredentialHolderProfile updateStatus(Long id, boolean active) {
-        CredentialHolderProfile profile = getHolderById(id);
-        profile.setActive(active);
-        return holderRepository.save(profile);
+
+    public CredentialHolderProfile updateProfile(Long id, CredentialHolderProfile profileDetails) {
+        CredentialHolderProfile profile = getProfileById(id);
+        profile.setName(profileDetails.getName());
+        profile.setEmail(profileDetails.getEmail());
+        // update other fields if needed
+        return profileRepository.save(profile);
+    }
+
+    public void deleteProfile(Long id) {
+        CredentialHolderProfile profile = getProfileById(id);
+        profileRepository.delete(profile);
     }
 }

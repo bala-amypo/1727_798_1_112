@@ -1,35 +1,44 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.security.SimplePasswordEncoder;
-import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class UserServiceImpl implements UserService {
+import java.util.List;
 
-    private final UserRepository repo;
-    private final SimplePasswordEncoder encoder;
+@Service
+public class UserServiceImpl {
 
-    public UserServiceImpl(UserRepository repo, SimplePasswordEncoder encoder) {
-        this.repo = repo;
-        this.encoder = encoder;
+    @Autowired
+    private UserRepository userRepository;
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    @Override
-    public User registerUser(User user) {
-        if (repo.existsByEmail(user.getEmail())) {
-            throw new BadRequestException("Duplicate email");
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    }
+
+    public User createUser(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("User already exists with email: " + user.getEmail());
         }
-        user.setPassword(encoder.encode(user.getPassword()));
-        return repo.save(user);
+        return userRepository.save(user);
     }
 
-    @Override
-    public User findByEmail(String email) {
-        return repo.findByEmail(email)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+    public User updateUser(Long id, User userDetails) {
+        User user = getUserById(id);
+        user.setName(userDetails.getName());
+        user.setEmail(userDetails.getEmail());
+        // update other fields if needed
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        User user = getUserById(id);
+        userRepository.delete(user);
     }
 }
