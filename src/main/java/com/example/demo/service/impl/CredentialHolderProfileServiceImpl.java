@@ -1,49 +1,39 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.CredentialHolderProfile;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CredentialHolderProfileRepository;
+import com.example.demo.service.CredentialHolderProfileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CredentialHolderProfileServiceImpl
-        implements CredentialHolderProfileService {
-
-    private final CredentialHolderProfileRepository repository;
-
-    // REQUIRED CONSTRUCTOR SIGNATURE
-    public CredentialHolderProfileServiceImpl(
-            CredentialHolderProfileRepository repository) {
-        this.repository = repository;
+@Transactional
+public class CredentialHolderProfileServiceImpl implements CredentialHolderProfileService {
+    
+    private final CredentialHolderProfileRepository holderRepository;
+    
+    @Autowired
+    public CredentialHolderProfileServiceImpl(CredentialHolderProfileRepository holderRepository) {
+        this.holderRepository = holderRepository;
     }
-
+    
     @Override
     public CredentialHolderProfile createHolder(CredentialHolderProfile profile) {
-        return repository.save(profile);
+        return holderRepository.save(profile);
     }
-
+    
     @Override
     public CredentialHolderProfile getHolderById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Holder not found"));
+        return holderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("CredentialHolderProfile", "id", id));
     }
-
+    
     @Override
-    public List<CredentialHolderProfile> getAllHolders() {
-        return repository.findAll();
-    }
-
-    @Override
-    public CredentialHolderProfile findByHolderId(String holderId) {
-        return repository.findByHolderId(holderId);
-    }
-
-    @Override
-    public CredentialHolderProfile updateHolderStatus(Long id, boolean active) {
+    public CredentialHolderProfile updateStatus(Long id, boolean active) {
         CredentialHolderProfile profile = getHolderById(id);
         profile.setActive(active);
-        return repository.save(profile);
+        return holderRepository.save(profile);
     }
 }
