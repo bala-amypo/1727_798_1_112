@@ -14,5 +14,27 @@ public class VerificationRule {
 
     private Boolean active;
 
-    // getters and setters
+    public Long getId() {
+        return id;
+    }
+ 
+    public void setId(Long id) {
+        this.id = id;
+    }
+ 
+    public String getRuleCode() {
+        return ruleCode;
+    }
+ 
+    public void setRuleCode(String ruleCode) {
+        this.ruleCode = ruleCode;
+    }
+ 
+    public Boolean getActive() {
+        return active;
+    }
+ 
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 }
