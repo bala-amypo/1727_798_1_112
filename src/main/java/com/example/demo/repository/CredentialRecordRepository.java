@@ -3,27 +3,29 @@ package com.example.demo.repository;
 import com.example.demo.entity.CredentialRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-public interface CredentialRecordRepository
-        extends JpaRepository<CredentialRecord, Long> {
-
-    // REQUIRED BY TEST
-    List<CredentialRecord> findExpiredBefore(LocalDate date);
-
-    // REQUIRED BY TEST (must use @Query)
-    @Query("SELECT c FROM CredentialRecord c WHERE c.status = :status")
-    List<CredentialRecord> findByStatusUsingHql(String status);
-
-    // REQUIRED BY TEST (must use @Query)
-    @Query("SELECT c FROM CredentialRecord c WHERE c.issuer = :issuer AND c.credentialType = :type")
-    List<CredentialRecord> searchByIssuerAndType(String issuer, String type);
-
-    // REQUIRED BY TEST
+@Repository
+public interface CredentialRecordRepository extends JpaRepository<CredentialRecord, Long> {
+    CredentialRecord save(CredentialRecord record);
+    Optional<CredentialRecord> findById(Long id);
     List<CredentialRecord> findByHolderId(Long holderId);
-
-    // REQUIRED BY TEST
-    CredentialRecord findByCredentialCode(String code);
+    Optional<CredentialRecord> findByCredentialCode(String credentialCode);
+    
+    @Query("SELECT c FROM CredentialRecord c WHERE c.expiryDate < :date")
+    List<CredentialRecord> findExpiredBefore(@Param("date") LocalDate date);
+    
+    @Query("SELECT c FROM CredentialRecord c WHERE c.status = :status")
+    List<CredentialRecord> findByStatusUsingHql(@Param("status") String status);
+    
+    List<CredentialRecord> findByIssuerAndCredentialType(String issuer, String credentialType);
+    
+    default List<CredentialRecord> searchByIssuerAndType(String issuer, String credentialType) {
+        return findByIssuerAndCredentialType(issuer, credentialType);
+    }
 }
