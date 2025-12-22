@@ -1,59 +1,97 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
+@Table(name = "verification_requests")
 public class VerificationRequest {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @Column(name = "credential_id", nullable = false)
     private Long credentialId;
-    private String requestedBy;
-    private String verificationMethod;
-    private String status;
-    private LocalDateTime verifiedAt;
-    private String resultMessage;
-
-    // Default constructor
+    
+    @Column(nullable = false)
+    private String status = "PENDING"; // PENDING, SUCCESS, FAILED
+    
+    @Column(name = "requested_at")
+    private LocalDateTime requestedAt = LocalDateTime.now();
+    
+    @Column(name = "processed_at")
+    private LocalDateTime processedAt;
+    
     public VerificationRequest() {}
-
-    // Parameterized constructor
-    public VerificationRequest(
-            Long credentialId,
-            String requestedBy,
-            String verificationMethod) {
-
+    
+    public VerificationRequest(Long credentialId) {
         this.credentialId = credentialId;
-        this.requestedBy = requestedBy;
-        this.verificationMethod = verificationMethod;
     }
-
+    
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getCredentialId() { return credentialId; }
-    public void setCredentialId(Long credentialId) { this.credentialId = credentialId; }
-
-    public String getRequestedBy() { return requestedBy; }
-    public void setRequestedBy(String requestedBy) { this.requestedBy = requestedBy; }
-
-    public String getVerificationMethod() { return verificationMethod; }
-    public void setVerificationMethod(String verificationMethod) {
-        this.verificationMethod = verificationMethod;
+    public Long getId() {
+        return id;
     }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public LocalDateTime getVerifiedAt() { return verifiedAt; }
-    public void setVerifiedAt(LocalDateTime verifiedAt) { this.verifiedAt = verifiedAt; }
-
-    public String getResultMessage() { return resultMessage; }
-    public void setResultMessage(String resultMessage) {
-        this.resultMessage = resultMessage;
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public Long getCredentialId() {
+        return credentialId;
+    }
+    
+    public void setCredentialId(Long credentialId) {
+        this.credentialId = credentialId;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+    
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+    public LocalDateTime getRequestedAt() {
+        return requestedAt;
+    }
+    
+    public void setRequestedAt(LocalDateTime requestedAt) {
+        this.requestedAt = requestedAt;
+    }
+    
+    public LocalDateTime getProcessedAt() {
+        return processedAt;
+    }
+    
+    public void setProcessedAt(LocalDateTime processedAt) {
+        this.processedAt = processedAt;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VerificationRequest that = (VerificationRequest) o;
+        return Objects.equals(id, that.id) && 
+               Objects.equals(credentialId, that.credentialId);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, credentialId);
+    }
+    
+    @Override
+    public String toString() {
+        return "VerificationRequest{" +
+                "id=" + id +
+                ", credentialId=" + credentialId +
+                ", status='" + status + '\'' +
+                ", requestedAt=" + requestedAt +
+                '}';
     }
 }
