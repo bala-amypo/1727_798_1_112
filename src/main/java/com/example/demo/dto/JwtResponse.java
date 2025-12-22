@@ -1,62 +1,50 @@
 package com.example.demo.dto;
 
-import java.io.Serializable;
+public class JwtResponse {
 
-public class JwtResponse implements Serializable {
     private String token;
-    private Long id;
+    private Long userId;
     private String email;
     private String role;
-    private String fullName;
-    
+
     public JwtResponse() {}
-    
-    public JwtResponse(String token, Long id, String email, String role, String fullName) {
+
+    public JwtResponse(String token, Long userId, String email, String role) {
         this.token = token;
-        this.id = id;
+        this.userId = userId;
         this.email = email;
         this.role = role;
-        this.fullName = fullName;
     }
-    
-    // Getters and Setters
+
     public String getToken() {
         return token;
     }
-    
+ 
     public void setToken(String token) {
         this.token = token;
     }
-    
-    public Long getId() {
-        return id;
+ 
+    public Long getUserId() {
+        return userId;
     }
-    
-    public void setId(Long id) {
-        this.id = id;
+ 
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
-    
+ 
     public String getEmail() {
         return email;
     }
-    
+ 
     public void setEmail(String email) {
         this.email = email;
     }
-    
+ 
     public String getRole() {
         return role;
     }
-    
+ 
     public void setRole(String role) {
         this.role = role;
-    }
-    
-    public String getFullName() {
-        return fullName;
-    }
-    
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
     }
 }
