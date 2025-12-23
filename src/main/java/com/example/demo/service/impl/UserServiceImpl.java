@@ -3,17 +3,16 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public User createUser(User user) {
@@ -21,29 +20,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
     public User getUserById(Long id) {
-        Optional<User> userDetails = userRepository.findById(id);
-        return userDetails.orElse(null);
+        return userRepository.findById(id)
+                .orElse(null);
     }
 
     @Override
-    public User updateUser(Long id, User user) {
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            User userDetails = existingUser.get();
-            userDetails.setFullName(user.getFullName());
-            userDetails.setEmail(user.getEmail());
-            userDetails.setPassword(user.getPassword());
-            userDetails.setRole(user.getRole());
-            return userRepository.save(userDetails);
-        } else {
+    public User updateUser(Long id, User userDetails) {
+
+        User user = userRepository.findById(id)
+                .orElse(null);
+
+        if (user == null) {
             return null;
         }
+
+        // ✅ FIXED (MATCHES ENTITY)
+        user.setName(userDetails.getName());
+        user.setPassword(userDetails.getPassword());
+        user.setRole(userDetails.getRole());
+
+        return userRepository.save(user);
     }
 
     @Override
@@ -51,4 +48,3 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 }
-    
