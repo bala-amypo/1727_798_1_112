@@ -1,9 +1,6 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class CredentialRecord {
@@ -12,17 +9,12 @@ public class CredentialRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-    private String description;
+    private String credentialName;
+    private String issuer;
+    private String status;
 
     public CredentialRecord() {}
 
-    public CredentialRecord(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
-
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -31,19 +23,27 @@ public class CredentialRecord {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getCredentialName() {
+        return credentialName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCredentialName(String credentialName) {
+        this.credentialName = credentialName;
     }
 
-    public String getDescription() {
-        return description;
+    public String getIssuer() {
+        return issuer;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setIssuer(String issuer) {
+        this.issuer = issuer;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
