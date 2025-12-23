@@ -9,7 +9,7 @@ public interface UserService {
 
     User getUserById(Long id);
 
-    List<User> getAllUsers();   // 👈 REQUIRED
+    List<User> getAllUsers();   
 
     User updateUser(Long id, User user);
 

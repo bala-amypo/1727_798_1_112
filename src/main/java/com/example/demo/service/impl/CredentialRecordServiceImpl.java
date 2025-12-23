@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service   // ⭐ REQUIRED — without this, bean NOT created
+@Service  
 public class CredentialRecordServiceImpl
         implements CredentialRecordService {
 
