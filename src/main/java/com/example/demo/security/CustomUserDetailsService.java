@@ -1,23 +1,33 @@
 package com.example.demo.security;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
 
-public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+    private final UserRepository userRepository;
+
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
-    public void handle(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AccessDeniedException accessDeniedException
-    ) throws IOException, ServletException {
+    public UserDetails loadUserByUsername(String name)
+            throws UsernameNotFoundException {
 
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write("Access Denied");
+        User user = userRepository.findByName(name)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found with name: " + name));
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getName())
+                .password(user.getPassword())
+                .roles(user.getRole())
+                .build();
     }
 }
