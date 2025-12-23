@@ -52,6 +52,18 @@ public class CredentialHolderProfileServiceImpl
     }
 
     @Override
+    public void updateStatus(Long id, boolean active) {
+        Optional<CredentialHolderProfile> existing =
+                repository.findById(id);
+
+        if (existing.isPresent()) {
+            CredentialHolderProfile profile = existing.get();
+            profile.setActive(active);
+            repository.save(profile);
+        }
+    }
+
+    @Override
     public void deleteProfile(Long id) {
         repository.deleteById(id);
     }
