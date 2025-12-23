@@ -2,40 +2,39 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.CredentialRecord;
 import com.example.demo.repository.CredentialRecordRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.CredentialRecordService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class CredentialRecordServiceImpl {
+@Service   // ⭐ REQUIRED — without this, bean NOT created
+public class CredentialRecordServiceImpl
+        implements CredentialRecordService {
 
-    @Autowired
-    private CredentialRecordRepository recordRepository;
+    private final CredentialRecordRepository repository;
 
-    public List<CredentialRecord> getAllRecords() {
-        return recordRepository.findAll();
+    public CredentialRecordServiceImpl(
+            CredentialRecordRepository repository) {
+        this.repository = repository;
     }
 
-    public CredentialRecord getRecordById(Long id) {
-        return recordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CredentialRecord not found with id: " + id));
+    @Override
+    public CredentialRecord createCredential(CredentialRecord record) {
+        return repository.save(record);
     }
 
-    public CredentialRecord createRecord(CredentialRecord record) {
-        return recordRepository.save(record);
+    @Override
+    public CredentialRecord getCredentialById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 
-    public CredentialRecord updateRecord(Long id, CredentialRecord recordDetails) {
-        CredentialRecord record = getRecordById(id);
-        record.setTitle(recordDetails.getTitle());
-        record.setDescription(recordDetails.getDescription());
-        // update other fields if needed
-        return recordRepository.save(record);
+    @Override
+    public List<CredentialRecord> getAllCredentials() {
+        return repository.findAll();
     }
 
-    public void deleteRecord(Long id) {
-        CredentialRecord record = getRecordById(id);
-        recordRepository.delete(record);
+    @Override
+    public void deleteCredential(Long id) {
+        repository.deleteById(id);
     }
 }

@@ -2,45 +2,39 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.CredentialRecord;
 import com.example.demo.service.CredentialRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/credentials")
+@RequestMapping("/credentials")
 public class CredentialRecordController {
-    
-    @Autowired
-    private CredentialRecordService credentialService;
-    
+
+    private final CredentialRecordService credentialService;
+
+    public CredentialRecordController(
+            CredentialRecordService credentialService) {
+        this.credentialService = credentialService;
+    }
+
     @PostMapping
-    public ResponseEntity<CredentialRecord> create(@RequestBody CredentialRecord record) {
-        CredentialRecord createdCredential = credentialService.createCredential(record);
-        return ResponseEntity.ok(createdCredential);
+    public CredentialRecord createCredential(
+            @RequestBody CredentialRecord record) {
+        return credentialService.createCredential(record);
     }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<CredentialRecord> update(
-            @PathVariable Long id,
-            @RequestBody CredentialRecord update) {
-        CredentialRecord updatedCredential = credentialService.updateCredential(id, update);
-        return ResponseEntity.ok(updatedCredential);
+
+    @GetMapping("/{id}")
+    public CredentialRecord getCredentialById(@PathVariable Long id) {
+        return credentialService.getCredentialById(id);
     }
-    
-    @GetMapping("/holder/{holderId}")
-    public ResponseEntity<List<CredentialRecord>> getByHolder(@PathVariable Long holderId) {
-        List<CredentialRecord> credentials = credentialService.getCredentialsByHolder(holderId);
-        return ResponseEntity.ok(credentials);
+
+    @GetMapping
+    public List<CredentialRecord> getAllCredentials() {
+        return credentialService.getAllCredentials();
     }
-    
-    @GetMapping("/code/{code}")
-    public ResponseEntity<CredentialRecord> getByCode(@PathVariable String code) {
-        CredentialRecord credential = credentialService.getCredentialByCode(code);
-        if (credential == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(credential);
+
+    @DeleteMapping("/{id}")
+    public void deleteCredential(@PathVariable Long id) {
+        credentialService.deleteCredential(id);
     }
 }
