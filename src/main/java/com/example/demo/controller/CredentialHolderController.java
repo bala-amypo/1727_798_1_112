@@ -2,74 +2,46 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.CredentialHolderProfile;
 import com.example.demo.service.CredentialHolderProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/holders")
+@RequestMapping("/holders")
 public class CredentialHolderController {
 
-    @Autowired
-    private CredentialHolderProfileService holderService;
+    private final CredentialHolderProfileService holderService;
 
-    // CREATE
+    public CredentialHolderController(
+            CredentialHolderProfileService holderService) {
+        this.holderService = holderService;
+    }
+
     @PostMapping
-    public ResponseEntity<CredentialHolderProfile> createProfile(
+    public CredentialHolderProfile createHolder(
             @RequestBody CredentialHolderProfile profile) {
-
-        return ResponseEntity.ok(
-                holderService.createProfile(profile)
-        );
+        return holderService.createHolder(profile);
     }
 
-    // GET ALL
-    @GetMapping
-    public ResponseEntity<List<CredentialHolderProfile>> getAllProfiles() {
-        return ResponseEntity.ok(
-                holderService.getAllProfiles()
-        );
-    }
-
-    // GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<CredentialHolderProfile> getProfileById(
-            @PathVariable Long id) {
-
-        return ResponseEntity.ok(
-                holderService.getProfileById(id)
-        );
+    public CredentialHolderProfile getHolderById(@PathVariable Long id) {
+        return holderService.getHolderById(id);
     }
 
-    // UPDATE PROFILE
+    @GetMapping
+    public List<CredentialHolderProfile> getAllHolders() {
+        return holderService.getAllHolders();
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<CredentialHolderProfile> updateProfile(
+    public CredentialHolderProfile updateHolder(
             @PathVariable Long id,
             @RequestBody CredentialHolderProfile profile) {
-
-        return ResponseEntity.ok(
-                holderService.updateProfile(id, profile)
-        );
+        return holderService.updateHolder(id, profile);
     }
 
-    // UPDATE STATUS (void → ResponseEntity)
-    @PutMapping("/{id}/status")
-    public ResponseEntity<String> updateStatus(
-            @PathVariable Long id,
-            @RequestParam boolean active) {
-
-        holderService.updateStatus(id, active);
-        return ResponseEntity.ok("Status updated successfully");
-    }
-
-    // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProfile(
-            @PathVariable Long id) {
-
-        holderService.deleteProfile(id);
-        return ResponseEntity.ok("Profile deleted successfully");
+    public void deleteHolder(@PathVariable Long id) {
+        holderService.deleteHolder(id);
     }
 }

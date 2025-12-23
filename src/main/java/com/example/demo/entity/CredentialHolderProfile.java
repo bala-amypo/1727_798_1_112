@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class CredentialHolderProfile {
@@ -9,22 +12,31 @@ public class CredentialHolderProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fullName;
+    private String name;
     private String email;
-    private boolean active;
 
-    // ---------- getters & setters ----------
+    public CredentialHolderProfile() {
+    }
+
+    public CredentialHolderProfile(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 
     public Long getId() {
         return id;
     }
 
-    public String getFullName() {
-        return fullName;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public String getName() {      // ✅ FIXED (was missing earlier)
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -33,13 +45,5 @@ public class CredentialHolderProfile {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 }
