@@ -5,6 +5,8 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -21,21 +23,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElse(null);
+        return userRepository.findById(id).orElse(null);
+    }
+
+    // ✅ FIX ADDED
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
     public User updateUser(Long id, User userDetails) {
 
-        User user = userRepository.findById(id)
-                .orElse(null);
-
+        User user = userRepository.findById(id).orElse(null);
         if (user == null) {
             return null;
         }
 
-        // ✅ FIXED (MATCHES ENTITY)
         user.setName(userDetails.getName());
         user.setPassword(userDetails.getPassword());
         user.setRole(userDetails.getRole());
