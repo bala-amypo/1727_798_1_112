@@ -1,14 +1,14 @@
-package com.example.demo.security;
+// package com.example.demo.security;
 
-import java.util.Base64;
+// import java.util.Base64;
 
-public class SimplePasswordEncoder {
+// public class SimplePasswordEncoder {
 
-    public String encode(String rawPassword) {
-        return Base64.getEncoder().encodeToString(rawPassword.getBytes());
-    }
+//     public String encode(String rawPassword) {
+//         return Base64.getEncoder().encodeToString(rawPassword.getBytes());
+//     }
 
-    public boolean matches(String rawPassword, String encodedPassword) {
-        return encode(rawPassword).equals(encodedPassword);
-    }
-}
+//     public boolean matches(String rawPassword, String encodedPassword) {
+//         return encode(rawPassword).equals(encodedPassword);
+//     }
+// }
