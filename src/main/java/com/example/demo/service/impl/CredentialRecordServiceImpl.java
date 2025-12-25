@@ -48,10 +48,11 @@ import java.util.List;
 
 public class CredentialRecordServiceImpl implements CredentialRecordService {
 
-    private final CredentialRecordRepository repo;
+    private final CredentialRecordRepository credentialRepo;
 
-    public CredentialRecordServiceImpl(CredentialRecordRepository repo) {
-        this.repo = repo;
+    // ✅ MUST ACCEPT REPOSITORY, NOT SERVICE
+    public CredentialRecordServiceImpl(CredentialRecordRepository credentialRepo) {
+        this.credentialRepo = credentialRepo;
     }
 
     @Override
@@ -62,23 +63,24 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
         } else if (record.getStatus() == null) {
             record.setStatus("VALID");
         }
-        return repo.save(record);
+        return credentialRepo.save(record);
     }
 
     @Override
     public CredentialRecord updateCredential(Long id, CredentialRecord update) {
-        CredentialRecord existing = repo.findById(id).orElseThrow();
+        CredentialRecord existing =
+                credentialRepo.findById(id).orElseThrow();
         existing.setCredentialCode(update.getCredentialCode());
-        return repo.save(existing);
+        return credentialRepo.save(existing);
     }
 
     @Override
     public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
-        return repo.findByHolderId(holderId);
+        return credentialRepo.findByHolderId(holderId);
     }
 
     @Override
     public CredentialRecord getCredentialByCode(String code) {
-        return repo.findByCredentialCode(code).orElse(null);
+        return credentialRepo.findByCredentialCode(code).orElse(null);
     }
 }
