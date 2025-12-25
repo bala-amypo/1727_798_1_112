@@ -1,26 +1,23 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.AuditTrailRecord;
-import com.example.demo.repository.AuditTrailRecordRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
+import com.example.demo.service.AuditTrailService;
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/audit")
 public class AuditTrailController {
 
-    @Autowired
-    private AuditTrailRecordRepository auditTrailRecordRepository;
+    private final AuditTrailService service;
 
-    @GetMapping
-    public List<AuditTrailRecord> getAllAuditRecords() {
-        return auditTrailRecordRepository.findAll();
+    public AuditTrailController(AuditTrailService service) {
+        this.service = service;
     }
 
-    @PostMapping
-    public AuditTrailRecord createAuditRecord(@RequestBody AuditTrailRecord record) {
-        return auditTrailRecordRepository.save(record);
+    public ResponseEntity<AuditTrailRecord> log(AuditTrailRecord record) {
+        return ResponseEntity.ok(service.logEvent(record));
+    }
+
+    public ResponseEntity<List<AuditTrailRecord>> getByCredential(Long credentialId) {
+        return ResponseEntity.ok(service.getLogsByCredential(credentialId));
     }
 }

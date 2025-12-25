@@ -1,33 +1,51 @@
+// package com.example.demo.controller;
+
+// import com.example.demo.entity.VerificationRule;
+// import com.example.demo.repository.VerificationRuleRepository;
+// import org.springframework.web.bind.annotation.*;
+
+// import java.util.List;
+
+// @RestController
+// @RequestMapping("/api/verification-rules")
+// public class VerificationRuleController {
+
+//     private final VerificationRuleRepository repository;
+
+//     public VerificationRuleController(VerificationRuleRepository repository) {
+//         this.repository = repository;
+//     }
+
+//     @PostMapping
+//     public VerificationRule create(@RequestBody VerificationRule rule) {
+//         return repository.save(rule);
+//     }
+
+//     @GetMapping
+//     public List<VerificationRule> getAll() {
+//         return repository.findAll();
+//     }
+
+//     @GetMapping("/active")
+//     public List<VerificationRule> getActiveRules() {
+//         return repository.findByActiveTrue();
+//     }
+// }
 package com.example.demo.controller;
 
 import com.example.demo.entity.VerificationRule;
-import com.example.demo.repository.VerificationRuleRepository;
-import org.springframework.web.bind.annotation.*;
+import com.example.demo.service.VerificationRuleService;
+import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/verification-rules")
 public class VerificationRuleController {
 
-    private final VerificationRuleRepository repository;
+    private final VerificationRuleService service;
 
-    public VerificationRuleController(VerificationRuleRepository repository) {
-        this.repository = repository;
+    public VerificationRuleController(VerificationRuleService service) {
+        this.service = service;
     }
 
-    @PostMapping
-    public VerificationRule create(@RequestBody VerificationRule rule) {
-        return repository.save(rule);
-    }
-
-    @GetMapping
-    public List<VerificationRule> getAll() {
-        return repository.findAll();
-    }
-
-    @GetMapping("/active")
-    public List<VerificationRule> getActiveRules() {
-        return repository.findByActiveTrue();
+    public ResponseEntity<VerificationRule> create(VerificationRule rule) {
+        return ResponseEntity.ok(service.createRule(rule));
     }
 }

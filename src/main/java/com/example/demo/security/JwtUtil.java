@@ -31,6 +31,13 @@
 //     }
 // }
 
+// package com.example.demo.security;
+
+// public class JwtUtil {
+//     public String generateToken(Long userId, String email, String role) {
+//         return "DUMMY_TOKEN";
+//     }
+// }
 package com.example.demo.security;
 
 public class JwtUtil {
@@ -38,4 +45,3 @@ public class JwtUtil {
         return "DUMMY_TOKEN";
     }
 }
-    
