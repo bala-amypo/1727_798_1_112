@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "audit_trail")
 public class AuditTrailRecord {
 
     @Id
@@ -11,9 +12,12 @@ public class AuditTrailRecord {
     private Long id;
 
     private String action;
+
     private String performedBy;
+
     private LocalDateTime timestamp;
 
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
