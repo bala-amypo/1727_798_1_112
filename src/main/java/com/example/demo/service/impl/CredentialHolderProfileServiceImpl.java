@@ -1,50 +1,35 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.CredentialHolderProfile;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CredentialHolderProfileRepository;
-import com.example.demo.service.CredentialHolderProfileService;
+import com.example.demo.service.CredentialHolderService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CredentialHolderProfileServiceImpl
-        implements CredentialHolderProfileService {
+public class CredentialHolderServiceImpl implements CredentialHolderService {
 
     private final CredentialHolderProfileRepository repository;
 
-    public CredentialHolderProfileServiceImpl(
-            CredentialHolderProfileRepository repository) {
+    public CredentialHolderServiceImpl(CredentialHolderProfileRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public CredentialHolderProfile createHolder(CredentialHolderProfile profile) {
+    public CredentialHolderProfile create(CredentialHolderProfile profile) {
         return repository.save(profile);
     }
 
     @Override
-    public CredentialHolderProfile getHolderById(Long id) {
-        return repository.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<CredentialHolderProfile> getAllHolders() {
+    public List<CredentialHolderProfile> getAll() {
         return repository.findAll();
     }
 
     @Override
-    public CredentialHolderProfile updateHolder(Long id, CredentialHolderProfile profile) {
-        CredentialHolderProfile existing = repository.findById(id).orElse(null);
-        if (existing == null) return null;
-
-        existing.setName(profile.getName());
-        existing.setEmail(profile.getEmail());
-        return repository.save(existing);
-    }
-
-    @Override
-    public void deleteHolder(Long id) {
-        repository.deleteById(id);
+    public CredentialHolderProfile getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Credential Holder not found"));
     }
 }
