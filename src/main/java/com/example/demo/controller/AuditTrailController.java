@@ -12,15 +12,15 @@ import java.util.List;
 public class AuditTrailController {
 
     @Autowired
-    private AuditTrailRecordRepository auditRepo;
+    private AuditTrailRecordRepository auditTrailRecordRepository;
 
     @GetMapping
     public List<AuditTrailRecord> getAllAuditRecords() {
-        return auditRepo.findAll();
+        return auditTrailRecordRepository.findAll();
     }
 
     @PostMapping
     public AuditTrailRecord createAuditRecord(@RequestBody AuditTrailRecord record) {
-        return auditRepo.save(record);
+        return auditTrailRecordRepository.save(record);
     }
 }
