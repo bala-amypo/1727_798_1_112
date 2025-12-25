@@ -1,76 +1,41 @@
+
+
 // package com.example.demo.security;
 
-// import io.jsonwebtoken.Claims;
-// import io.jsonwebtoken.Jwts;
-// import io.jsonwebtoken.SignatureAlgorithm;
+// import io.jsonwebtoken.*;
 // import org.springframework.stereotype.Component;
 
 // import java.util.Date;
 
 // @Component
-// public class JwtTokenUtil {
+// public class JwtUtil {
 
-//     private final String jwtSecret = "SecretKey12345"; // Change this to your secret
-//     private final long jwtExpirationMs = 86400000; // 1 day
+//     private final String SECRET = "secret123";
+//     private final long EXPIRATION = 86400000;
 
-//     // Generate token
-//     public String generateToken(String username) {
+//     public String generateToken(String email) {
 //         return Jwts.builder()
-//                 .setSubject(username)
+//                 .setSubject(email)
 //                 .setIssuedAt(new Date())
-//                 .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
-//                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
+//                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+//                 .signWith(SignatureAlgorithm.HS256, SECRET)
 //                 .compact();
 //     }
 
-//     // Validate token
-//     public boolean validateToken(String token) {
-//         try {
-//             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-//             return true;
-//         } catch (Exception e) {
-//             return false;
-//         }
-//     }
-
-//     // Get username from token
-//     public String getUsernameFromToken(String token) {
-//         Claims claims = Jwts.parser()
-//                 .setSigningKey(jwtSecret)
+//     public String extractEmail(String token) {
+//         return Jwts.parser()
+//                 .setSigningKey(SECRET)
 //                 .parseClaimsJws(token)
-//                 .getBody();
-//         return claims.getSubject();
+//                 .getBody()
+//                 .getSubject();
 //     }
 // }
 
 package com.example.demo.security;
 
-import io.jsonwebtoken.*;
-import org.springframework.stereotype.Component;
-
-import java.util.Date;
-
-@Component
 public class JwtUtil {
-
-    private final String SECRET = "secret123";
-    private final long EXPIRATION = 86400000;
-
-    public String generateToken(String email) {
-        return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(SignatureAlgorithm.HS256, SECRET)
-                .compact();
-    }
-
-    public String extractEmail(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+    public String generateToken(Long userId, String email, String role) {
+        return "DUMMY_TOKEN";
     }
 }
-
+    
