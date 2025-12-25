@@ -1,21 +1,33 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.VerificationRule;
-import com.example.demo.service.VerificationRuleService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.example.demo.repository.VerificationRuleRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/rules")
+@RequestMapping("/api/verification-rules")
 public class VerificationRuleController {
-    
-    @Autowired
-    private VerificationRuleService ruleService;
-    
+
+    private final VerificationRuleRepository repository;
+
+    public VerificationRuleController(VerificationRuleRepository repository) {
+        this.repository = repository;
+    }
+
     @PostMapping
-    public ResponseEntity<VerificationRule> create(@RequestBody VerificationRule rule) {
-        VerificationRule createdRule = ruleService.createRule(rule);
-        return ResponseEntity.ok(createdRule);
+    public VerificationRule create(@RequestBody VerificationRule rule) {
+        return repository.save(rule);
+    }
+
+    @GetMapping
+    public List<VerificationRule> getAll() {
+        return repository.findAll();
+    }
+
+    @GetMapping("/active")
+    public List<VerificationRule> getActiveRules() {
+        return repository.findByActiveTrue();
     }
 }

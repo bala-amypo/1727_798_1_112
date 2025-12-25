@@ -1,40 +1,33 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.CredentialRecord;
-import com.example.demo.service.CredentialRecordService;
+import com.example.demo.repository.CredentialRecordRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/credentials")
+@RequestMapping("/api/credentials")
 public class CredentialRecordController {
 
-    private final CredentialRecordService credentialService;
+    private final CredentialRecordRepository repository;
 
-    public CredentialRecordController(
-            CredentialRecordService credentialService) {
-        this.credentialService = credentialService;
+    public CredentialRecordController(CredentialRecordRepository repository) {
+        this.repository = repository;
     }
 
     @PostMapping
-    public CredentialRecord createCredential(
-            @RequestBody CredentialRecord record) {
-        return credentialService.createCredential(record);
-    }
-
-    @GetMapping("/{id}")
-    public CredentialRecord getCredentialById(@PathVariable Long id) {
-        return credentialService.getCredentialById(id);
+    public CredentialRecord create(@RequestBody CredentialRecord record) {
+        return repository.save(record);
     }
 
     @GetMapping
-    public List<CredentialRecord> getAllCredentials() {
-        return credentialService.getAllCredentials();
+    public List<CredentialRecord> getAll() {
+        return repository.findAll();
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteCredential(@PathVariable Long id) {
-        credentialService.deleteCredential(id);
+    @GetMapping("/{id}")
+    public CredentialRecord getById(@PathVariable Long id) {
+        return repository.findById(id).orElse(null);
     }
 }

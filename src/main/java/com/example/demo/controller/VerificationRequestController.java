@@ -1,42 +1,33 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.VerificationRequest;
-import com.example.demo.service.VerificationRequestService;
+import com.example.demo.repository.VerificationRequestRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/verification-requests")
+@RequestMapping("/api/verification-requests")
 public class VerificationRequestController {
 
-    private final VerificationRequestService verificationRequestService;
+    private final VerificationRequestRepository repository;
 
-    public VerificationRequestController(
-            VerificationRequestService verificationRequestService) {
-        this.verificationRequestService = verificationRequestService;
+    public VerificationRequestController(VerificationRequestRepository repository) {
+        this.repository = repository;
     }
 
     @PostMapping
-    public VerificationRequest createRequest(
-            @RequestBody VerificationRequest request) {
-        return verificationRequestService.createRequest(request);
-    }
-
-    @GetMapping("/{id}")
-    public VerificationRequest getRequestById(@PathVariable Long id) {
-        return verificationRequestService.getRequestById(id);
+    public VerificationRequest create(@RequestBody VerificationRequest request) {
+        return repository.save(request);
     }
 
     @GetMapping
-    public List<VerificationRequest> getAllRequests() {
-        return verificationRequestService.getAllRequests();
+    public List<VerificationRequest> getAll() {
+        return repository.findAll();
     }
 
-    @PutMapping("/{id}/status")
-    public VerificationRequest updateStatus(
-            @PathVariable Long id,
-            @RequestParam String status) {
-        return verificationRequestService.updateStatus(id, status);
+    @GetMapping("/credential/{credentialId}")
+    public List<VerificationRequest> getByCredentialId(@PathVariable Long credentialId) {
+        return repository.findByCredentialId(credentialId);
     }
 }
