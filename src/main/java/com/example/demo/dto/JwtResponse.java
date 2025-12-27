@@ -1,26 +1,17 @@
-
-
-// package com.example.demo.dto;
-
-// public class JwtResponse {
-
-//     private String token;
-
-//     public JwtResponse(String token) {
-//         this.token = token;
-//     }
-
-//     public String getToken() { return token; }
-// }
 package com.example.demo.dto;
 
 public class JwtResponse {
+
     private String token;
     private Long id;
     private String email;
     private String role;
 
     public JwtResponse() {}
+
+    public JwtResponse(String token) {
+        this.token = token;
+    }
 
     public JwtResponse(String token, Long id, String email, String role) {
         this.token = token;
