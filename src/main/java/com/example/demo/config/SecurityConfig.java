@@ -14,30 +14,31 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            // ❌ Disable CSRF (Swagger uses GET)
+            // REQUIRED behind proxy
             .csrf(csrf -> csrf.disable())
 
-            // ❌ Disable default login page
+            // Disable login mechanisms
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
-            // ✅ Authorization rules
             .authorizeHttpRequests(auth -> auth
-                // ✅ Swagger URLs
+                // ✅ Swagger
                 .requestMatchers(
                     "/swagger-ui/**",
                     "/swagger-ui.html",
                     "/v3/api-docs/**"
                 ).permitAll()
 
-                // ✅ Auth APIs
+                // ✅ Health / test servlet
                 .requestMatchers(
-                    "/auth/login",
-                    "/auth/register"
+                    "/",
+                    "/status",
+                    "/simple-status",
+                    "/health"
                 ).permitAll()
 
-                // 🔒 Everything else secured
-                .anyRequest().authenticated()
+                // Everything else
+                .anyRequest().permitAll()   // IMPORTANT for cloud
             );
 
         return http.build();
