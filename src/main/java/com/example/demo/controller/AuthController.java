@@ -1,49 +1,11 @@
-// package com.example.demo.controller;
-
-// import com.example.demo.dto.*;
-// import com.example.demo.entity.User;
-// import com.example.demo.repository.UserRepository;
-// import com.example.demo.security.JwtUtil;
-// import org.springframework.web.bind.annotation.*;
-
-// @RestController
-// @RequestMapping("/api/auth")
-// public class AuthController {
-
-//     private final UserRepository userRepo;
-//     private final JwtUtil jwtUtil;
-
-//     public AuthController(UserRepository userRepo, JwtUtil jwtUtil) {
-//         this.userRepo = userRepo;
-//         this.jwtUtil = jwtUtil;
-//     }
-
-//     @PostMapping("/register")
-//     public User register(@RequestBody RegisterRequest req) {
-//         User u = new User();
-//         u.setFullName(req.getFullName());
-//         u.setEmail(req.getEmail());
-//         u.setPassword(req.getPassword());
-//         return userRepo.save(u);
-//     }
-
-//     @PostMapping("/login")
-//     public JwtResponse login(@RequestBody LoginRequest req) {
-//         return new JwtResponse(jwtUtil.generateToken(req.getEmail()));
-//     }
-// }
-
 package com.example.demo.controller;
 
-import com.example.demo.dto.JwtResponse;
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
+import com.example.demo.dto.*;
 import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "Authentication API", description = "User Authentication & Registration")
 public class AuthController {
 
     private final UserService userService;
@@ -66,16 +27,13 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    // --------------------------------------------------
-    // REGISTER
-    // --------------------------------------------------
-    @Operation(summary = "Register a new user")
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> register(
             @RequestBody RegisterRequest req) {
 
-        if (req.getEmail() == null)
-            throw new BadRequestException("Invalid email");
+        if (req.getEmail() == null || req.getPassword() == null) {
+            throw new BadRequestException("Invalid request");
+        }
 
         User user = new User(
                 null,
@@ -103,10 +61,6 @@ public class AuthController {
         );
     }
 
-    // --------------------------------------------------
-    // LOGIN
-    // --------------------------------------------------
-    @Operation(summary = "Login user")
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(
             @RequestBody LoginRequest req) {
