@@ -7,67 +7,58 @@ import com.example.demo.service.CredentialRecordService;
 import java.time.LocalDate;
 import java.util.List;
 
-public class CredentialRecordServiceImpl implements CredentialRecordService {
+public class CredentialRecordServiceImpl
+        implements CredentialRecordService {
 
     private final CredentialRecordRepository credentialRepo;
 
-    // ✅ Constructor EXACTLY as tests expect
-    public CredentialRecordServiceImpl(CredentialRecordRepository credentialRepo) {
+    public CredentialRecordServiceImpl(
+            CredentialRecordRepository credentialRepo) {
         this.credentialRepo = credentialRepo;
     }
 
-    // --------------------------------------------------
-    // CREATE CREDENTIAL
-    // --------------------------------------------------
     @Override
     public CredentialRecord createCredential(CredentialRecord record) {
 
-        // Expiry handling
         if (record.getExpiryDate() != null &&
                 record.getExpiryDate().isBefore(LocalDate.now())) {
             record.setStatus("EXPIRED");
-        }
-        // Default status
-        else if (record.getStatus() == null) {
+        } else if (record.getStatus() == null) {
             record.setStatus("VALID");
         }
 
         return credentialRepo.save(record);
     }
 
-    // --------------------------------------------------
-    // UPDATE CREDENTIAL
-    // --------------------------------------------------
     @Override
     public CredentialRecord updateCredential(Long id, CredentialRecord update) {
 
-        CredentialRecord existing =
-                credentialRepo.findById(id).orElseThrow();
+        CredentialRecord existing = credentialRepo.findById(id)
+                .orElseThrow();
 
-        existing.setCredentialCode(update.getCredentialCode());
+        if (update.getCredentialCode() != null)
+            existing.setCredentialCode(update.getCredentialCode());
+
+        if (update.getTitle() != null)
+            existing.setTitle(update.getTitle());
+
+        if (update.getIssuer() != null)
+            existing.setIssuer(update.getIssuer());
+
+        if (update.getCredentialType() != null)
+            existing.setCredentialType(update.getCredentialType());
+
         return credentialRepo.save(existing);
     }
 
-    // --------------------------------------------------
-    // GET BY HOLDER
-    // --------------------------------------------------
     @Override
     public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
         return credentialRepo.findByHolderId(holderId);
     }
 
-    // --------------------------------------------------
-    // GET BY CODE
-    // --------------------------------------------------
     @Override
     public CredentialRecord getCredentialByCode(String code) {
-        return credentialRepo.findByCredentialCode(code).orElse(null);
-    }
-
-    // --------------------------------------------------
-    // 🔴 REQUIRED FOR TEST 61 & 62
-    // --------------------------------------------------
-    public List<CredentialRecord> getAllCredentials() {
-        return credentialRepo.findAll();
+        return credentialRepo.findByCredentialCode(code)
+                .orElse(null);
     }
 }
