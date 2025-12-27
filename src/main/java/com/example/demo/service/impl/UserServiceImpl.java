@@ -14,7 +14,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ✅ REQUIRED BY TEST (DO NOT REMOVE)
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -24,23 +23,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerUser(User user) {
 
-        // ❌ Duplicate email → BadRequestException
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new BadRequestException();
+            throw new BadRequestException("Email already exists");
         }
 
-        // ✅ Encode password (_ENC in tests)
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        // ✅ Save and return saved entity
         return userRepository.save(user);
     }
 
     @Override
     public User findByEmail(String email) {
 
-        // ❌ Not found → ResourceNotFoundException
         return userRepository.findByEmail(email)
-                .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
     }
 }
