@@ -4,6 +4,7 @@ import com.example.demo.entity.VerificationRule;
 import com.example.demo.repository.VerificationRuleRepository;
 import com.example.demo.service.VerificationRuleService;
 
+@Service
 public class VerificationRuleServiceImpl
         implements VerificationRuleService {
 

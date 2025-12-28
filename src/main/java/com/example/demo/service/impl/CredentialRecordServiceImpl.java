@@ -7,6 +7,7 @@ import com.example.demo.service.CredentialRecordService;
 import java.time.LocalDate;
 import java.util.List;
 
+@Service
 public class CredentialRecordServiceImpl
         implements CredentialRecordService {
 
