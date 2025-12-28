@@ -1,47 +1,41 @@
 package com.example.demo.config;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
 
 @Configuration
-public class SecurityConfig {
+public class SwaggerConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public OpenAPI openAPI() {
 
-        http
-            .cors(cors -> cors.configurationSource(request -> {
-                CorsConfiguration config = new CorsConfiguration();
+        // 🔐 Define JWT Bearer security scheme
+        SecurityScheme bearerScheme = new SecurityScheme()
+                .name("Authorization")
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT");
 
-                // 🔥 ALLOW YOUR SWAGGER HOST
-                config.setAllowedOrigins(List.of(
-                        "https://9262.pro604cr.amypo.ai",
-                        "http://localhost:9001"
-                ));
-
-                config.setAllowedMethods(
-                        List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-                config.setAllowedHeaders(List.of("*"));
-                config.setAllowCredentials(false);
-
-                return config;
-            }))
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                        "/auth/**",
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**"
-                ).permitAll()
-                .anyRequest().authenticated()
-            );
-
-        return http.build();
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Digital Credential Verification Engine")
+                        .description("API documentation")
+                        .version("1.0"))
+                .servers(List.of(
+                        // 🔥 SAME HOST AS SECURITY CONFIG
+                        new Server().url("http://localhost:9001"),
+                        new Server().url("https://9262.pro604cr.amypo.ai")
+                ))
+                // 🔐 Enable Authorize 🔒 button
+                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
+                .components(new io.swagger.v3.oas.models.Components()
+                        .addSecuritySchemes("Bearer Authentication", bearerScheme));
     }
 }
