@@ -6,13 +6,13 @@ import java.time.LocalDateTime;
 @Entity
 public class AuditTrailRecord {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long credentialId;
     private LocalDateTime loggedAt;
 
+    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

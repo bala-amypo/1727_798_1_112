@@ -8,8 +8,7 @@ import java.util.Set;
 @Entity
 public class CredentialRecord {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long holderId;
@@ -24,6 +23,7 @@ public class CredentialRecord {
     @ManyToMany
     private Set<VerificationRule> rules = new HashSet<>();
 
+    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -52,5 +52,4 @@ public class CredentialRecord {
     public void setMetadataJson(String metadataJson) { this.metadataJson = metadataJson; }
 
     public Set<VerificationRule> getRules() { return rules; }
-    public void setRules(Set<VerificationRule> rules) { this.rules = rules; }
 }
