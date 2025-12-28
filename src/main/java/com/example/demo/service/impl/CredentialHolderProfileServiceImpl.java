@@ -5,6 +5,8 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CredentialHolderProfileRepository;
 import com.example.demo.service.CredentialHolderProfileService;
 
+import org.springframework.stereotype.Service;   // 🔴 THIS LINE IS REQUIRED
+
 @Service
 public class CredentialHolderProfileServiceImpl
         implements CredentialHolderProfileService {
