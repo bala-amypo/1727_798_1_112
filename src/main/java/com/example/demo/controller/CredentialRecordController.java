@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.config.OpenApiConfig;
+import com.example.demo.config.SwaggerConfig;
 import com.example.demo.entity.CredentialRecord;
 import com.example.demo.service.CredentialRecordService;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/credentials")
-@SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME) // 🔒
+@SecurityRequirement(name = SwaggerConfig.SECURITY_SCHEME_NAME)
 public class CredentialRecordController {
 
     private final CredentialRecordService service;
