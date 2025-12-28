@@ -3,7 +3,12 @@ package com.example.demo.repository;
 import com.example.demo.entity.CredentialHolderProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface CredentialHolderProfileRepository
         extends JpaRepository<CredentialHolderProfile, Long> {
-    // Tests use save() and findById() only
+
+    Optional<CredentialHolderProfile> findById(Long id);
+
+    CredentialHolderProfile save(CredentialHolderProfile profile);
 }
