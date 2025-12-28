@@ -3,12 +3,9 @@ package com.example.demo.controller;
 import com.example.demo.entity.CredentialRecord;
 import com.example.demo.service.CredentialRecordService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/credentials")
 public class CredentialRecordController {
 
     private final CredentialRecordService service;
@@ -17,25 +14,19 @@ public class CredentialRecordController {
         this.service = service;
     }
 
-    @PostMapping
-    public ResponseEntity<CredentialRecord> create(@RequestBody CredentialRecord record) {
-        return ResponseEntity.ok(service.createCredential(record));
+    public ResponseEntity<CredentialRecord> create(CredentialRecord r) {
+        return ResponseEntity.ok(service.createCredential(r));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CredentialRecord> update(
-            @PathVariable Long id,
-            @RequestBody CredentialRecord update) {
-        return ResponseEntity.ok(service.updateCredential(id, update));
+    public ResponseEntity<CredentialRecord> update(Long id, CredentialRecord r) {
+        return ResponseEntity.ok(service.updateCredential(id, r));
     }
 
-    @GetMapping("/holder/{holderId}")
-    public ResponseEntity<List<CredentialRecord>> getByHolder(@PathVariable Long holderId) {
-        return ResponseEntity.ok(service.getCredentialsByHolder(holderId));
+    public ResponseEntity<List<CredentialRecord>> getByHolder(Long id) {
+        return ResponseEntity.ok(service.getCredentialsByHolder(id));
     }
 
-    @GetMapping("/code/{code}")
-    public ResponseEntity<CredentialRecord> getByCode(@PathVariable String code) {
+    public ResponseEntity<CredentialRecord> getByCode(String code) {
         return ResponseEntity.ok(service.getCredentialByCode(code));
     }
 }
