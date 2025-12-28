@@ -24,10 +24,11 @@ public class AuthController {
     public ResponseEntity<JwtResponse> register(@RequestBody User user) {
 
         User saved = userService.registerUser(user);
+
         String token = jwtUtil.generateToken(
                 saved.getId(),
                 saved.getEmail(),
-                "USER"
+                saved.getRole()
         );
 
         return ResponseEntity.ok(
@@ -35,27 +36,7 @@ public class AuthController {
                         token,
                         saved.getId(),
                         saved.getEmail(),
-                        "USER"
-                )
-        );
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody User user) {
-
-        User found = userService.findByEmail(user.getEmail());
-        String token = jwtUtil.generateToken(
-                found.getId(),
-                found.getEmail(),
-                "USER"
-        );
-
-        return ResponseEntity.ok(
-                new JwtResponse(
-                        token,
-                        found.getId(),
-                        found.getEmail(),
-                        "USER"
+                        saved.getRole()
                 )
         );
     }
