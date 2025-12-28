@@ -1,37 +1,59 @@
 package com.example.demo.config;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
-import io.swagger.v3.oas.models.servers.Server;
+import com.example.demo.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-public class SwaggerConfig {
+public class SecurityConfig {
 
     @Bean
-    public OpenAPI openAPI() {
-        SecurityScheme bearerScheme = new SecurityScheme()
-                .name("Authorization")
-                .type(SecurityScheme.Type.HTTP)
-                .scheme("bearer")
-                .bearerFormat("JWT");
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-        return new OpenAPI()
-                .info(new Info()
-                        .title("Digital Credential Verification Engine")
-                        .description("API documentation")
-                        .version("1.0"))
-                .servers(List.of(
-                        new Server().url("http://localhost:9001"),
-                        new Server().url("https://9262.pro604cr.amypo.ai")
-                ))
-                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
-                .components(new io.swagger.v3.oas.models.Components()
-                        .addSecuritySchemes("Bearer Authentication", bearerScheme));
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http
+            // ✅ CSRF DISABLED
+            .csrf(csrf -> csrf.disable())
+
+            // ✅ Stateless JWT
+            .sessionManagement(session ->
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+            // ✅ Swagger + Auth allowed
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                        "/auth/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**"
+                ).permitAll()
+                .anyRequest().authenticated()
+            );
+
+        // ✅ JWT filter (safe, no blocking)
+        http.addFilterBefore(
+                new JwtAuthenticationFilter(),
+                UsernamePasswordAuthenticationFilter.class
+        );
+
+        return http.build();
     }
 }
