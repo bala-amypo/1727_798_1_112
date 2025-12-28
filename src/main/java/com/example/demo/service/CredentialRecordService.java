@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.CredentialRecord;
-
 import java.util.List;
 
 public interface CredentialRecordService {
@@ -13,4 +12,7 @@ public interface CredentialRecordService {
     List<CredentialRecord> getCredentialsByHolder(Long holderId);
 
     CredentialRecord getCredentialByCode(String code);
+
+    // ✅ REQUIRED FOR VERIFICATION TESTS
+    List<CredentialRecord> getAllCredentials();
 }
