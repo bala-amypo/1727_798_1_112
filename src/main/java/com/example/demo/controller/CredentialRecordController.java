@@ -1,36 +1,32 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.CredentialHolderProfile;
-import com.example.demo.service.CredentialHolderProfileService;
+import com.example.demo.entity.CredentialRecord;
+import com.example.demo.service.CredentialRecordService;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/holders")
-public class CredentialHolderController {
+@RequestMapping("/credentials")
+public class CredentialRecordController {
 
-    private final CredentialHolderProfileService holderService;
+    private final CredentialRecordService service;
 
-    public CredentialHolderController(CredentialHolderProfileService holderService) {
-        this.holderService = holderService;
+    public CredentialRecordController(
+            CredentialRecordService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity<CredentialHolderProfile> create(
-            @RequestBody CredentialHolderProfile profile) {
-        return ResponseEntity.ok(holderService.createHolder(profile));
+    public CredentialRecord create(
+            @RequestBody CredentialRecord record) {
+        return service.createCredential(record);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CredentialHolderProfile> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(holderService.getHolderById(id));
-    }
-
-    @PutMapping("/{id}/status")
-    public ResponseEntity<CredentialHolderProfile> updateStatus(
-            @PathVariable Long id,
-            @RequestParam boolean active) {
-        return ResponseEntity.ok(holderService.updateStatus(id, active));
+    @GetMapping("/holder/{holderId}")
+    public List<CredentialRecord> byHolder(
+            @PathVariable Long holderId) {
+        return service.getCredentialsByHolder(holderId);
     }
 }
