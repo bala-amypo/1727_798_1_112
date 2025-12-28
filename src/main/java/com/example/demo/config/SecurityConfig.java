@@ -3,7 +3,11 @@ package com.example.demo.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,28 +24,30 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // ✅ Password encoder bean
+    // ✅ Password Encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ✅ Main security filter chain
+    // ✅ REQUIRED: AuthenticationManager bean (THIS FIXES YOUR ERROR)
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    // ✅ Security Filter Chain
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            // ✅ Enable CORS
             .cors(Customizer.withDefaults())
-
-            // ✅ Disable CSRF (required for Swagger & REST)
             .csrf(csrf -> csrf.disable())
 
-            // ✅ Stateless JWT-style security
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            // ✅ Authorization rules
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                         "/auth/**",
@@ -49,37 +55,29 @@ public class SecurityConfig {
                         "/swagger-ui.html",
                         "/v3/api-docs/**"
                 ).permitAll()
-
-                // Allow OPTIONS (preflight)
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
                 .anyRequest().authenticated()
             );
 
         return http.build();
     }
 
-    // ✅ GLOBAL CORS CONFIGURATION
+    // ✅ CORS Configuration (Swagger-safe)
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
-
-        // ✅ Only deployed origin
         config.setAllowedOrigins(List.of(
                 "https://9262.pro604cr.amypo.ai"
         ));
-
         config.setAllowedMethods(List.of(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS"
         ));
-
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
-
         source.registerCorsConfiguration("/**", config);
         return source;
     }
