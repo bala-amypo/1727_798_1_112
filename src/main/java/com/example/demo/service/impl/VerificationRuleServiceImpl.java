@@ -3,21 +3,17 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.VerificationRule;
 import com.example.demo.repository.VerificationRuleRepository;
 import com.example.demo.service.VerificationRuleService;
-import org.springframework.stereotype.Service;   // ✅ REQUIRED
 
-@Service
-public class VerificationRuleServiceImpl
-        implements VerificationRuleService {
+public class VerificationRuleServiceImpl implements VerificationRuleService {
 
-    private final VerificationRuleRepository ruleRepo;
+    private final VerificationRuleRepository repo;
 
-    public VerificationRuleServiceImpl(
-            VerificationRuleRepository ruleRepo) {
-        this.ruleRepo = ruleRepo;
+    public VerificationRuleServiceImpl(VerificationRuleRepository repo) {
+        this.repo = repo;
     }
 
     @Override
     public VerificationRule createRule(VerificationRule rule) {
-        return ruleRepo.save(rule);
+        return repo.save(rule);
     }
 }

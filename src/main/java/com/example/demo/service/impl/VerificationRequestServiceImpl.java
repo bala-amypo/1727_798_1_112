@@ -6,24 +6,21 @@ import com.example.demo.service.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.stereotype.Service;   // ✅ REQUIRED
 
-@Service
-public class VerificationRequestServiceImpl
-        implements VerificationRequestService {
+public class VerificationRequestServiceImpl implements VerificationRequestService {
 
-    private final VerificationRequestRepository verificationRequestRepo;
+    private final VerificationRequestRepository requestRepo;
     private final CredentialRecordService credentialService;
     private final VerificationRuleService ruleService;
     private final AuditTrailService auditService;
 
     public VerificationRequestServiceImpl(
-            VerificationRequestRepository verificationRequestRepo,
+            VerificationRequestRepository requestRepo,
             CredentialRecordService credentialService,
             VerificationRuleService ruleService,
             AuditTrailService auditService) {
 
-        this.verificationRequestRepo = verificationRequestRepo;
+        this.requestRepo = requestRepo;
         this.credentialService = credentialService;
         this.ruleService = ruleService;
         this.auditService = auditService;
@@ -31,40 +28,37 @@ public class VerificationRequestServiceImpl
 
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
-        return verificationRequestRepo.save(request);
+        return requestRepo.save(request);
     }
 
     @Override
     public VerificationRequest processVerification(Long requestId) {
+        VerificationRequest req = requestRepo.findById(requestId).orElseThrow();
 
-        VerificationRequest request =
-                verificationRequestRepo.findById(requestId).orElseThrow();
-
-        // Tests mock credentialRepo.findAll() via service
-        CredentialRecord credential =
-                credentialService.getCredentialsByHolder(null)
-                        .stream()
-                        .filter(c -> c.getId().equals(request.getCredentialId()))
-                        .findFirst()
-                        .orElse(null);
+        CredentialRecord credential = credentialService
+                .getCredentialsByHolder(req.getCredentialId())
+                .stream()
+                .filter(c -> c.getId().equals(req.getCredentialId()))
+                .findFirst()
+                .orElse(null);
 
         if (credential != null &&
                 credential.getExpiryDate() != null &&
                 credential.getExpiryDate().isBefore(LocalDate.now())) {
-            request.setStatus("FAILED");
+            req.setStatus("FAILED");
         } else {
-            request.setStatus("SUCCESS");
+            req.setStatus("SUCCESS");
         }
 
-        AuditTrailRecord log = new AuditTrailRecord();
-        log.setCredentialId(request.getCredentialId());
-        auditService.logEvent(log);
+        AuditTrailRecord audit = new AuditTrailRecord();
+        audit.setCredentialId(req.getCredentialId());
+        auditService.logEvent(audit);
 
-        return verificationRequestRepo.save(request);
+        return requestRepo.save(req);
     }
 
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
-        return verificationRequestRepo.findByCredentialId(credentialId);
+        return requestRepo.findByCredentialId(credentialId);
     }
 }
