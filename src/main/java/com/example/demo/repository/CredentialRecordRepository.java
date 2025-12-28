@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import com.example.demo.entity.CredentialRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +20,9 @@ public interface CredentialRecordRepository
 
     Optional<CredentialRecord> findByCredentialCode(String credentialCode);
 
-    List<CredentialRecord> findExpiredBefore(LocalDate date);
+    // ✅ FIXED: Explicit JPQL
+    @Query("select c from CredentialRecord c where c.expiryDate < :date")
+    List<CredentialRecord> findExpiredBefore(@Param("date") LocalDate date);
 
     @Query("select c from CredentialRecord c where c.status = ?1")
     List<CredentialRecord> findByStatusUsingHql(String status);
