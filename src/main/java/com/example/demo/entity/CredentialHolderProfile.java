@@ -5,14 +5,14 @@ import jakarta.persistence.*;
 @Entity
 public class CredentialHolderProfile {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String email;
     private String organization;
     private Boolean active = true;
 
-    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
