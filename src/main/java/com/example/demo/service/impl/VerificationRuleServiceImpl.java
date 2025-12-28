@@ -14,17 +14,12 @@ public class VerificationRuleServiceImpl implements VerificationRuleService {
         this.ruleRepo = ruleRepo;
     }
 
-    // ---------------------------------------------------------
-    // Create rule
-    // ---------------------------------------------------------
     @Override
     public VerificationRule createRule(VerificationRule rule) {
         return ruleRepo.save(rule);
     }
 
-    // ---------------------------------------------------------
-    // REQUIRED BY VERIFICATION TESTS (TC61–TC64)
-    // ---------------------------------------------------------
+    // ✅ NOW LEGALLY OVERRIDES INTERFACE METHOD
     @Override
     public List<VerificationRule> getActiveRules() {
         return ruleRepo.findByActiveTrue();
