@@ -7,13 +7,11 @@ import com.example.demo.service.CredentialHolderProfileService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CredentialHolderProfileServiceImpl
-        implements CredentialHolderProfileService {
+public class CredentialHolderProfileServiceImpl implements CredentialHolderProfileService {
 
     private final CredentialHolderProfileRepository holderRepo;
 
-    public CredentialHolderProfileServiceImpl(
-            CredentialHolderProfileRepository holderRepo) {
+    public CredentialHolderProfileServiceImpl(CredentialHolderProfileRepository holderRepo) {
         this.holderRepo = holderRepo;
     }
 
