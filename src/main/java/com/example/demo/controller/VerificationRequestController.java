@@ -2,17 +2,41 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.VerificationRequest;
 import com.example.demo.service.VerificationRequestService;
-import org.springframework.http.ResponseEntity;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/verifications")
 public class VerificationRequestController {
 
-    private final VerificationRequestService service;
+    private final VerificationRequestService verificationService;
 
-    public VerificationRequestController(VerificationRequestService service) {
-        this.service = service;
+    public VerificationRequestController(
+            VerificationRequestService verificationService) {
+        this.verificationService = verificationService;
     }
 
-    public ResponseEntity<VerificationRequest> initiate(VerificationRequest r) {
-        return ResponseEntity.ok(service.initiateVerification(r));
+    @PostMapping
+    public ResponseEntity<VerificationRequest> initiate(
+            @RequestBody VerificationRequest request) {
+        return ResponseEntity.ok(
+                verificationService.initiateVerification(request));
+    }
+
+    @PostMapping("/{id}/process")
+    public ResponseEntity<VerificationRequest> process(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(
+                verificationService.processVerification(id));
+    }
+
+    @GetMapping("/credential/{credentialId}")
+    public ResponseEntity<List<VerificationRequest>> getByCredential(
+            @PathVariable Long credentialId) {
+        return ResponseEntity.ok(
+                verificationService.getRequestsByCredential(credentialId));
     }
 }

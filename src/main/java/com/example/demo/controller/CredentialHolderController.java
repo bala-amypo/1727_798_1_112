@@ -1,26 +1,71 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.CredentialHolderProfile;
-import com.example.demo.service.CredentialHolderProfileService;
+import com.example.demo.dto.JwtResponse;
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
+import com.example.demo.entity.User;
+import com.example.demo.security.JwtUtil;
+import com.example.demo.service.UserService;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.*;
 
-public class CredentialHolderController {
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
 
-    private final CredentialHolderProfileService service;
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    public CredentialHolderController(CredentialHolderProfileService service) {
-        this.service = service;
+    public AuthController(UserService userService,
+                          AuthenticationManager authenticationManager,
+                          JwtUtil jwtUtil) {
+        this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
-    public ResponseEntity<CredentialHolderProfile> create(CredentialHolderProfile p) {
-        return ResponseEntity.ok(service.createHolder(p));
+    @PostMapping("/register")
+    public ResponseEntity<JwtResponse> register(@RequestBody RegisterRequest request) {
+
+        User user = new User(
+                null,
+                request.getFullName(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getRole()
+        );
+
+        User saved = userService.registerUser(user);
+        String token = jwtUtil.generateToken(
+                saved.getId(),
+                saved.getEmail(),
+                saved.getRole()
+        );
+
+        return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    public ResponseEntity<CredentialHolderProfile> getById(Long id) {
-        return ResponseEntity.ok(service.getHolderById(id));
-    }
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest request) {
 
-    public ResponseEntity<CredentialHolderProfile> updateStatus(Long id, boolean active) {
-        return ResponseEntity.ok(service.updateStatus(id, active));
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        User user = userService.findByEmail(request.getEmail());
+        String token = jwtUtil.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
+
+        return ResponseEntity.ok(new JwtResponse(token));
     }
 }

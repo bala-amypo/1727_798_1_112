@@ -1,32 +1,36 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.CredentialRecord;
-import com.example.demo.service.CredentialRecordService;
+import com.example.demo.entity.CredentialHolderProfile;
+import com.example.demo.service.CredentialHolderProfileService;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+@RestController
+@RequestMapping("/holders")
+public class CredentialHolderController {
 
-public class CredentialRecordController {
+    private final CredentialHolderProfileService holderService;
 
-    private final CredentialRecordService service;
-
-    public CredentialRecordController(CredentialRecordService service) {
-        this.service = service;
+    public CredentialHolderController(CredentialHolderProfileService holderService) {
+        this.holderService = holderService;
     }
 
-    public ResponseEntity<CredentialRecord> create(CredentialRecord r) {
-        return ResponseEntity.ok(service.createCredential(r));
+    @PostMapping
+    public ResponseEntity<CredentialHolderProfile> create(
+            @RequestBody CredentialHolderProfile profile) {
+        return ResponseEntity.ok(holderService.createHolder(profile));
     }
 
-    public ResponseEntity<CredentialRecord> update(Long id, CredentialRecord r) {
-        return ResponseEntity.ok(service.updateCredential(id, r));
+    @GetMapping("/{id}")
+    public ResponseEntity<CredentialHolderProfile> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(holderService.getHolderById(id));
     }
 
-    public ResponseEntity<List<CredentialRecord>> getByHolder(Long id) {
-        return ResponseEntity.ok(service.getCredentialsByHolder(id));
-    }
-
-    public ResponseEntity<CredentialRecord> getByCode(String code) {
-        return ResponseEntity.ok(service.getCredentialByCode(code));
+    @PutMapping("/{id}/status")
+    public ResponseEntity<CredentialHolderProfile> updateStatus(
+            @PathVariable Long id,
+            @RequestParam boolean active) {
+        return ResponseEntity.ok(holderService.updateStatus(id, active));
     }
 }
