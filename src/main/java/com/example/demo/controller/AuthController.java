@@ -7,6 +7,7 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,7 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    // ================= REGISTER =================
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> register(
             @RequestBody RegisterRequest request) {
@@ -38,27 +40,35 @@ public class AuthController {
         user.setPassword(request.getPassword());
         user.setRole(request.getRole());
 
-        User saved = userService.registerUser(user);
+        User savedUser = userService.registerUser(user);
 
         String token = jwtUtil.generateToken(
-                saved.getId(),
-                saved.getEmail(),
-                saved.getRole()
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
         );
 
-        return ResponseEntity.ok(
-                new JwtResponse(token, saved.getId(),
-                        saved.getEmail(), saved.getRole())
+        JwtResponse response = new JwtResponse(
+                token,
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
         );
+
+        return ResponseEntity.ok(response);
     }
 
+    // ================= LOGIN =================
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(
             @RequestBody LoginRequest request) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(), request.getPassword()));
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
         User user = userService.findByEmail(request.getEmail());
         if (user == null) {
@@ -71,9 +81,13 @@ public class AuthController {
                 user.getRole()
         );
 
-        return ResponseEntity.ok(
-                new JwtResponse(token, user.getId(),
-                        user.getEmail(), user.getRole())
+        JwtResponse response = new JwtResponse(
+                token,
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
         );
+
+        return ResponseEntity.ok(response);
     }
 }
