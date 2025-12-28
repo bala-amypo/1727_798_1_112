@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service   // 🔴 REQUIRED — WITHOUT THIS, SPRING WILL NOT CREATE THE BEAN
+@Service   
 public class AuditTrailServiceImpl implements AuditTrailService {
 
     private final AuditTrailRecordRepository auditRepo;
