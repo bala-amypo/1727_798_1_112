@@ -31,7 +31,7 @@ public class SwaggerConfig {
                         .version("1.0"))
                 .servers(List.of(
                         new Server().url("http://localhost:9001"),
-                        new Server().url("https://9262.pro604cr.amypo.ai")
+                        new Server().url("https://9262.pro604cr.amypo.ai/")
                 ))
                 .addSecurityItem(new SecurityRequirement()
                         .addList(SECURITY_SCHEME_NAME))
