@@ -7,6 +7,7 @@ import com.example.demo.service.AuditTrailService;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class AuditTrailServiceImpl
         implements AuditTrailService {
 
