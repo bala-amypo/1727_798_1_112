@@ -10,8 +10,10 @@ import java.io.PrintWriter;
 public class SimpleStatusServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // Allow exception if writer is null (test expects it)
+    public void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+
+        // Tests REQUIRE public access
         PrintWriter out = resp.getWriter();
         out.write("Digital Credential Verification Engine is running");
     }
